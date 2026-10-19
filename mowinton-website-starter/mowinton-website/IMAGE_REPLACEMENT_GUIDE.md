@@ -60,7 +60,32 @@ All 6 industry cards share uniform card sizing, hover zoom (`scale(1.06)`), and 
 
 ---
 
-## 3. Careers Page Image Placeholders (`careers-2/`)
+## 3. About Us Image Placeholders (`about/`)
+
+| Section | Placeholder File | Dimensions | Original Asset File |
+| :--- | :--- | :--- | :--- |
+| **Top Banner Card 1** | `img/placeholders/about-business-consulting.svg` | 900 × 600 px | Business Consulting photo (`border-radius: 20px`) |
+| **Top Banner Card 2** | `img/placeholders/about-professional-services.svg` | 900 × 600 px | Professional Services photo (`border-radius: 20px`) |
+
+---
+
+## 4. Services Page Image Placeholders (`services/`)
+
+| Section / Card | Placeholder File | Dimensions | Purpose |
+| :--- | :--- | :--- | :--- |
+| **IT Services: Technical Consulting** | `img/placeholders/services-technical-consulting.svg` | 900 × 600 px | Hero feature card |
+| **IT Services: IT Outsourcing** | `img/placeholders/services-it-outsourcing.svg` | 900 × 600 px | Hero feature card |
+| **IT Services: AI Solutions** | `img/placeholders/services-ai-solutions.svg` | 900 × 600 px | Hero feature card |
+| **Workforce: Flexible** | `img/placeholders/services-workforce-flexible.svg` | 1200 × 800 px | Workforce card image |
+| **Workforce: Trained** | `img/placeholders/services-workforce-trained.svg` | 1200 × 800 px | Workforce card image |
+| **Workforce: Operational** | `img/placeholders/services-workforce-operational.svg` | 1200 × 800 px | Workforce card image |
+| **Tailored Solutions: Project Mgmt** | `img/placeholders/services-tailored-pm.svg` | 340 × 340 px | Tailored card circle/square |
+| **Tailored Solutions: AI Integration**| `img/placeholders/services-tailored-ai.svg` | 340 × 340 px | Tailored card circle/square |
+| **Tailored Solutions: Talent Experts** | `img/placeholders/services-tailored-talent.svg` | 340 × 340 px | Tailored card circle/square |
+
+---
+
+## 5. Careers Page Image Placeholders (`careers-2/`)
 
 | Location | Placeholder File | Dimensions | Description / Styling |
 | :--- | :--- | :--- | :--- |
@@ -69,7 +94,7 @@ All 6 industry cards share uniform card sizing, hover zoom (`scale(1.06)`), and 
 
 ---
 
-## 4. Interview Guide Image Placeholders (`interview-guide/`)
+## 6. Interview Guide Image Placeholders (`interview-guide/`)
 
 | Step | Placeholder File | Dimensions | Description / Usage |
 | :--- | :--- | :--- | :--- |
@@ -81,7 +106,7 @@ All 6 industry cards share uniform card sizing, hover zoom (`scale(1.06)`), and 
 
 ---
 
-## 5. General Replacement Instructions
+## 7. General Replacement Instructions
 
 When replacing placeholder SVG images with production photographs:
 1. Ensure images are saved in optimized formats (JPEG, WebP, or AVIF format) under 250KB for fast page speed.

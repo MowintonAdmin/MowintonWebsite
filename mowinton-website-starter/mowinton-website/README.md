@@ -92,18 +92,32 @@ mowinton-website/
 
 ## How to Run Locally
 
-Run the project with PHP's built-in web server:
-
+### 1. Database Setup (MariaDB / MySQL)
+Run database migration and create the initial administrator account:
 ```bash
-php -S localhost:8000
+# Run database migration (creates mowinton_db and 7 tables)
+php scripts/migrate.php
+
+# Provision administrator account
+php scripts/create_admin.php
 ```
 
-Then visit:
-[http://localhost:8000](http://localhost:8000)
+### 2. Start PHP Web Server
+```bash
+php -S 127.0.0.1:8000
+```
+
+- **Public Website:** [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
+- **Admin Dashboard:** [http://127.0.0.1:8000/admin/](http://127.0.0.1:8000/admin/)
 
 ---
 
-## Security & Form Handling
+## Security & Admin Architecture
+- **Admin Authentication:** Bcrypt password hashing (`PASSWORD_DEFAULT`), session regeneration, 30m inactivity expiration, login rate limiting (5 attempts / 15m), CSRF tokens.
+- **RBAC:** Super Admin vs Staff permission controls.
 - **CSRF Protection:** Every form generates and verifies secure session tokens.
 - **Honeypot Anti-Spam:** Hidden spam trap fields filter automated bot submissions silently.
-- **File Upload Security:** Resume uploads validate allowed MIME types (`.pdf`, `.doc`, `.docx`), enforce a 5MB size limit, sanitize filenames with timestamp prefixes, and store files safely in `uploads/resumes/`.
+- **File Upload Security:** Resume uploads validate allowed MIME types (`.pdf`, `.doc`, `.docx`), enforce a 10MB size limit, sanitize filenames with timestamp prefixes, and store files safely in `uploads/resumes/`.
+- **Direct Access Protection:** Direct HTTP requests to `/uploads/resumes/` are blocked with **403 Forbidden**. Resumes are streamed only via authenticated endpoint `/admin/download-resume.php` with directory traversal protection and audit logging.
+- **Automated Test Suite:** `python scripts/test_admin_e2e.py` (26/26 end-to-end tests passing, 100% success).
+- **Responsive Layout Verification:** Tested across 14 pages and 6 viewport widths (84/84 tests passed, 0 horizontal scroll issues).

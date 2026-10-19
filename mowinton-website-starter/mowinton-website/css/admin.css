@@ -525,8 +525,17 @@ body.admin-body {
 /* Tables */
 .admin-table-responsive {
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   border-radius: 12px;
   border: 1px solid var(--admin-border);
+}
+
+.admin-form-input:focus-visible,
+.admin-form-select:focus-visible,
+.admin-form-textarea:focus-visible,
+.admin-btn:focus-visible {
+  outline: 2px solid var(--admin-blue);
+  outline-offset: 2px;
 }
 
 .admin-table {

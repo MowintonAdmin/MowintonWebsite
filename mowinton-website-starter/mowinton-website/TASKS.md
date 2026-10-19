@@ -56,18 +56,35 @@ Status: [ ] todo, [x] verified complete. Do not mark complete merely because cod
 - [x] Google Reviews carousel interactive slider (sliding animations, track positioning, mobile touch friendly) in `js/main.js`.
 - [x] Verified zero exposure of real user or customer data.
 
-## Phase 5 — Deployment and Handover
+## Phase 5 — Backend Database Integration & Admin Management System
+- [x] MariaDB 13.0 database schema designed and migrated with 7 tables (`admin_users`, `contact_messages`, `job_applications`, `application_notes`, `audit_logs`, `system_settings`, `login_rate_limits`).
+- [x] Super Admin and Staff account provisioning via secure CLI script (`scripts/create_admin.php`).
+- [x] Admin authentication system: Bcrypt password hashing, session timeout (30m), strict cookies, login rate limiting (5 attempts / 15m), CSRF tokens.
+- [x] Admin Dashboard overview (`/admin/`): Real-time metrics queried from MySQL via PDO prepared statements.
+- [x] Customer inquiries management (`/admin/messages.php`): Filter by status, search, modal view, mark read/resolved, Super Admin delete.
+- [x] Candidate applications management (`/admin/applications.php` & `/admin/application-details.php`): Search, status workflow, internal notes log, Job vs Internship tabs.
+- [x] Secure CV storage & streaming download (`/admin/download-resume.php`): Direct HTTP access blocked (403 Forbidden), authenticated streaming with audit logging.
+- [x] End-to-end automated test suite (`scripts/test_admin_e2e.py`): 26 / 26 tests passed (100% success).
+
+## Phase 6 — Final UI Refinement, Responsiveness & Optimization
+- [x] Git checkpoint created locally (commit `b5858c8`).
+- [x] Standardized typography variables in CSS (`--font-family-primary`, fluid `clamp()` heading scales, line heights, letter spacing).
+- [x] Responsive layout audit across 14 pages × 6 viewport sizes (375px, 390px, 768px, 1024px, 1440px, 1920px) — 84 / 84 tests passed with 0 horizontal scroll issues.
+- [x] Admin dashboard UI optimization: touch-friendly table scrolling (`-webkit-overflow-scrolling: touch`), accessible `:focus-visible` indicators.
+- [x] Backend regression testing executed: 26 / 26 Phase 5 tests re-verified with 100% success.
+- [x] Documentation updated: `VISUAL_REVIEW_NOTES.md`, `PHASE6_TEST_REPORT.md`, `IMAGE_REPLACEMENT_GUIDE.md`, `PROJECT_REQUIREMENTS.md`.
+
+## Phase 7 — Production Deployment & Handover (On User Approval)
 - [ ] Set up staging Hostinger Web Hosting environment separate from Website Builder production site.
-- [ ] Configure GitHub deployment only after verifying hosting plan and safe target directory.
-- [ ] Test deployment, backups, rollback, SSL, redirects and form delivery on Hostinger PHP environment.
+- [ ] Configure deployment only after verifying hosting plan and safe target directory.
+- [ ] Test deployment, database import, SSL, redirects, and file permissions (755 for `uploads/resumes/`) on Hostinger.
 - [ ] Obtain owner approval before changing live domain.
-- [ ] Document maintenance workflow: Antigravity/VS Code -> GitHub -> staging -> production.
+- [ ] Document production maintenance workflow.
 
 ---
 
 ## Verification Evidence & Test Results
-- **Full Route Crawl (14/14 Pages):** Tested all 14 pages on local PHP server `http://127.0.0.1:8000/`. All returned HTTP 200 with zero PHP errors, warnings, or notices.
-- **Form Submissions Tested:**
-  - Contact Form: Verified with `test_submit.py` -> HTTP 200, JSON success message.
-  - Job Application Form: Verified with `test_job_submit.py` -> HTTP 200, resume file safely validated and stored in `uploads/resumes/`.
-- **Visual Benchmarking & Screenshots:** Captured full desktop and mobile screenshots for all reconstructed pages in `scratch/`.
+- **Responsive Viewport Audit (84/84 Tests Passed):** Tested all 14 pages on 375px, 390px, 768px, 1024px, 1440px, and 1920px. 0 element overflow culprits.
+- **Backend Regression Suite (26/26 Tests Passed):** All authentication, session, CSRF, database persistence, status flow, notes, and secure resume download tests passed.
+- **Full Route Crawl (14/14 Public Pages + 5 Admin Pages):** Verified with zero PHP errors, notices, or warnings.
+- **Visual Benchmarking:** Complete placeholder catalog in `IMAGE_REPLACEMENT_GUIDE.md` and audit notes in `VISUAL_REVIEW_NOTES.md`.

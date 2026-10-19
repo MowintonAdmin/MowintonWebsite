@@ -44,6 +44,20 @@ Rebuild https://mowinton.com/ as a maintainable source-code project, visually an
 - Do not overwrite the production website or domain before approval and backup.
 - Keep deployment credentials in secure GitHub Actions secrets or Hostinger configuration, never in code.
 
+## Database & Admin Portal Specifications (Phase 5)
+- **Database Engine:** MySQL / MariaDB (PDO prepared statements, UTF-8mb4).
+- **Architecture:** Plain PHP 8+ without external frameworks (No Laravel, No WordPress).
+- **Core Tables (7):** `admin_users`, `contact_messages`, `job_applications`, `application_notes`, `audit_logs`, `system_settings`, `login_rate_limits`.
+- **Security:** Bcrypt password hashing, session timeout (30m), strict cookies, login rate limiting (5 attempts / 15m), CSRF tokens.
+- **RBAC:** Super Admin (full control, staff creation, settings, deletion) vs Staff (message/candidate review).
+- **CV Storage:** Blocked from direct HTTP requests (403 Forbidden via `.htaccess`); streamed only to authenticated admins via `/admin/download-resume.php` with directory traversal protection and audit logging.
+
+## UI Refinement & Responsiveness (Phase 6)
+- **Typography Standards:** Standardized CSS variables (`--font-family-primary`, fluid `clamp()` heading scales, line heights, letter spacing).
+- **Responsiveness:** Validated across 6 viewports (375px, 390px, 768px, 1024px, 1440px, 1920px) across all 14 public routes with 0 horizontal overflows.
+- **Admin Usability:** Touch-friendly data table horizontal scroll (`-webkit-overflow-scrolling: touch`), accessible `:focus-visible` focus outlines.
+- **Regression Testing:** 100% pass on 26 automated end-to-end tests after all UI refinements.
+
 ## Acceptance criteria
 - Every inventoried page renders and closely matches approved desktop and mobile reference screenshots.
 - Navigation and interactive behavior work; no broken assets or console errors.

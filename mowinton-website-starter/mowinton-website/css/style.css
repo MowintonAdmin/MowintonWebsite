@@ -18,6 +18,23 @@
   --color-text-muted: #64748b;
   --color-border: #e2e8f0;
   --font-family: 'Poppins', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-family-primary: 'Poppins', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-size-hero: clamp(38px, 4.5vw, 60px);
+  --font-size-h1: clamp(32px, 3.8vw, 48px);
+  --font-size-h2: clamp(26px, 3.2vw, 40px);
+  --font-size-h3: clamp(20px, 2.2vw, 26px);
+  --font-size-h4: 20px;
+  --font-size-body-lg: 18px;
+  --font-size-body: 16px;
+  --font-size-sm: 14px;
+  --font-size-xs: 12px;
+  --line-height-tight: 1.1;
+  --line-height-snug: 1.25;
+  --line-height-normal: 1.6;
+  --line-height-relaxed: 1.75;
+  --letter-spacing-tag: 1.5px;
+  --letter-spacing-tight: -1px;
+  --letter-spacing-tighter: -1.5px;
   --shadow-sm: 0 8px 20px rgba(15, 23, 42, 0.08);
   --shadow-md: 0 10px 30px rgba(15, 23, 42, 0.08);
   --shadow-lg: 0 25px 60px rgba(15, 23, 42, 0.16);
@@ -27,6 +44,16 @@
 /* CSS Reset & Defaults */
 *, *::before, *::after {
   box-sizing: border-box;
+}
+
+/* Accessible focus indicators for keyboard navigation */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
 }
 
 html {
