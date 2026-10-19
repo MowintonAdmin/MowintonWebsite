@@ -51,7 +51,7 @@ Status: [ ] todo, [x] verified complete. Do not mark complete merely because cod
 - [x] Contact/inquiry form (`index.php`, `about/index.php`, `services/index.php`):
   - CSRF protection, honeypot anti-spam, required field validation, and AJAX/standard POST submission handling (`includes/process_contact.php`).
 - [x] Job Application form & file upload handling (`careers-2/index.php`, `submit-job-application/index.php`):
-  - CSRF token validation, honeypot protection, file upload validation (PDF, DOC, DOCX up to 5MB saved to `uploads/resumes/` with sanitized timestamped filenames), error handling, and JSON/POST responses (`includes/process_job_application.php`).
+  - CSRF token validation, honeypot protection, file upload validation (PDF, DOC, DOCX up to 10MB saved to `uploads/resumes/` with sanitized timestamped filenames), error handling, and JSON/POST responses (`includes/process_job_application.php`).
 - [x] WhatsApp and social integrations tested.
 - [x] Google Reviews carousel interactive slider (sliding animations, track positioning, mobile touch friendly) in `js/main.js`.
 - [x] Verified zero exposure of real user or customer data.

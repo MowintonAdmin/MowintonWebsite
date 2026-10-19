@@ -14,39 +14,58 @@ $rawUri = $_SERVER['REQUEST_URI'] ?? '/';
 $path   = parse_url($rawUri, PHP_URL_PATH);
 $path   = urldecode($path ?: '/');
 
-// 1. Strict Security Block: Sensitive Directories & Files
+// Normalize path for consistent, case-insensitive security checks (prevents Windows case bypass)
+$normalizedPath = strtolower(str_replace('\\', '/', $path));
+
+// 1. Strict Security Block: Sensitive Directories & Private Uploads
 $blockedPrefixes = [
     '/uploads/resumes',
     '/storage/resumes',
+    '/storage',
     '/includes',
     '/database',
     '/scripts',
+    '/.git',
 ];
 
+foreach ($blockedPrefixes as $prefix) {
+    if (str_starts_with($normalizedPath, $prefix)) {
+        http_response_code(403);
+        header('Content-Type: text/plain; charset=utf-8');
+        echo "403 Forbidden: Direct access to protected path '{$prefix}' is strictly prohibited.";
+        exit;
+    }
+}
+
+// 2. Strict Security Block: Sensitive Extensions, Backup Archives, and Hidden Files
 $blockedExtensions = [
     'env',
     'sql',
     'log',
     'htaccess',
     'md',
+    'zip',
+    'tar',
+    'gz',
+    'tgz',
+    'bak',
+    'backup',
+    'ini',
+    'conf',
+    'sh',
+    'bat',
+    'cmd',
 ];
 
-// Block direct access to protected directories
-foreach ($blockedPrefixes as $prefix) {
-    if (str_starts_with($path, $prefix)) {
-        http_response_code(403);
-        header('Content-Type: text/plain; charset=utf-8');
-        echo "403 Forbidden: Direct access to protected directory '{$prefix}' is strictly prohibited.";
-        exit;
-    }
-}
-
-// Block access to sensitive file extensions (e.g., .env, .sql)
 $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
-if (in_array($ext, $blockedExtensions, true) || str_contains($path, '.env')) {
+if (
+    in_array($ext, $blockedExtensions, true) ||
+    str_contains($normalizedPath, '.env') ||
+    preg_match('#/\.[a-zA-Z0-9]#', $normalizedPath)
+) {
     http_response_code(403);
     header('Content-Type: text/plain; charset=utf-8');
-    echo "403 Forbidden: Access to configuration or source files is prohibited.";
+    echo "403 Forbidden: Access to configuration, backup, or source files is prohibited.";
     exit;
 }
 

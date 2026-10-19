@@ -122,3 +122,21 @@ function record_audit_log(string $action, ?string $target_type = null, ?int $tar
         return false;
     }
 }
+
+/**
+ * Resolves the directory path for uploaded candidate resumes.
+ * Defaults to `uploads/resumes` within the project, or uses `RESUME_STORAGE_PATH` from .env if defined.
+ */
+function get_resume_storage_path(): string {
+    $custom = getenv('RESUME_STORAGE_PATH');
+    if ($custom !== false && trim($custom) !== '') {
+        $trimmed = trim($custom);
+        // If relative path, resolve relative to project root
+        if (!preg_match('/^([a-zA-Z]:[\\\\\/]|\/)/', $trimmed)) {
+            $base = realpath(__DIR__ . '/..') ?: (__DIR__ . '/..');
+            return rtrim($base . '/' . $trimmed, '/\\');
+        }
+        return rtrim($trimmed, '/\\');
+    }
+    return realpath(__DIR__ . '/../uploads/resumes') ?: (__DIR__ . '/../uploads/resumes');
+}

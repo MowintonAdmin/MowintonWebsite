@@ -27,7 +27,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             $app = $stmt->fetch();
             if ($app) {
                 if (!empty($app['resume_filename'])) {
-                    $filePath = __DIR__ . '/../uploads/resumes/' . basename($app['resume_filename']);
+                    $storageDir = get_resume_storage_path();
+                    $filePath = rtrim($storageDir, '/\\') . DIRECTORY_SEPARATOR . basename($app['resume_filename']);
                     if (file_exists($filePath)) {
                         @unlink($filePath);
                     }

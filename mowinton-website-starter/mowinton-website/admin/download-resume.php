@@ -33,11 +33,16 @@ try {
 
     // 4. Secure Path Traversal Prevention
     $safeFilename = basename($app['resume_filename']);
-    $storageDir = realpath(__DIR__ . '/../uploads/resumes');
-    $filePath = realpath($storageDir . DIRECTORY_SEPARATOR . $safeFilename);
+    $storageDir = get_resume_storage_path();
+    if (!is_dir($storageDir)) {
+        @mkdir($storageDir, 0755, true);
+    }
+    $realStorageDir = realpath($storageDir);
+    $candidatePath = ($realStorageDir !== false ? $realStorageDir : $storageDir) . DIRECTORY_SEPARATOR . $safeFilename;
+    $filePath = realpath($candidatePath);
 
-    // Verify the file is strictly within the allowed directory
-    if ($filePath === false || !str_starts_with($filePath, $storageDir) || !file_exists($filePath)) {
+    // Verify the file exists and is strictly within the allowed directory
+    if ($realStorageDir === false || $filePath === false || !str_starts_with(strtolower($filePath), strtolower($realStorageDir)) || !file_exists($filePath)) {
         http_response_code(404);
         exit('404 Not Found: The requested resume file does not exist on disk.');
     }

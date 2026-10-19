@@ -148,6 +148,7 @@ require_once __DIR__ . '/../includes/header.php';
                         <div class="app-form-group">
                             <label class="app-form-label" for="submit_resume">Upload CV / Resume <span class="form-required">*</span></label>
                             <input type="file" id="submit_resume" name="resume" class="app-form-file" accept=".pdf,.doc,.docx" required>
+                            <div style="font-size: 12px; color: #64748b; margin-top: 5px;">Accepted formats: PDF, DOC, DOCX (Max: 10MB)</div>
                         </div>
 
                         <!-- Confirmation Radio / Checkbox -->

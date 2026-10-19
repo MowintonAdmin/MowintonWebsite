@@ -26,7 +26,7 @@ A clean, production-grade reconstruction of [https://mowinton.com/](https://mowi
 ## 1. Project Overview
 
 ### Purpose
-This repository reconstructs the complete corporate website of **Mowinton Consulting** from the ground up as a maintainable, self-hosted source-code project. It eliminates dependence on proprietary website builder platforms while preserving 100% of the original visual design, layout structure, responsive behaviors, and functional interactions.
+This repository reconstructs the complete corporate website of **Mowinton Consulting** from the ground up as a maintainable, self-hosted source-code project. It eliminates dependence on proprietary website builder platforms while faithfully reproducing the original visual design, layout structure, responsive behaviors, and functional interactions.
 
 ### Implemented Features
 - **Public Corporate Website (14 Pages):**
@@ -135,40 +135,61 @@ php -m | grep -E "pdo_mysql|fileinfo|curl|mbstring|openssl"
 php -m | Select-String "pdo_mysql", "fileinfo", "curl", "mbstring", "openssl"
 ```
 
-### 4.2 How to Enable Missing PHP Extensions
-If any extension is missing, locate your active `php.ini` file:
+### 4.2 Enable PHP Extensions & Configure Upload Limits
+If any extension is missing or file upload limits need adjustment, locate your active `php.ini` file:
 ```bash
 php --ini
 ```
-Open `php.ini` in a text editor and uncomment the corresponding extension lines (remove the leading `;`):
+Open `php.ini` in a text editor and ensure the required extensions and file upload settings are configured:
 ```ini
+; Required Extensions
 extension=pdo_mysql
 extension=fileinfo
 extension=curl
 extension=mbstring
 extension=openssl
+
+; Recommended File Upload Size Settings (supports candidate CV uploads up to 10MB)
+upload_max_filesize = 10M
+post_max_size = 12M
 ```
-Save the file and verify with `php -m`.
+Save the file and verify active extensions with `php -m`.
 
 ---
 
 ## 5. Environment Configuration
 
-### Step 1: Create a Dedicated Least-Privilege Database User
-For both local development and production security, **never configure your application to use the `root` administrative account with an empty password**.
+### Step 1: Database Credentials & User Setup
+The website connects to MySQL / MariaDB strictly via the parameters configured in your local `.env` file. **You do not need to use the original developer's root credentials or duplicate anyone else's computer setup.** Each developer configures their own `.env` to match their own local database environment:
 
-Open your MySQL or MariaDB command client and run:
-```sql
--- 1. Create the database
-CREATE DATABASE IF NOT EXISTS `mowinton_db` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+- **Option A — Default Local Setup (e.g. XAMPP, Laragon, or default local MariaDB):**
+  If your local MySQL/MariaDB runs with `root` and no password, your `.env` can simply use:
+  ```ini
+  DB_USER=root
+  DB_PASS=
+  ```
+- **Option B — Local Account with Custom Password:**
+  If your local `root` account or personal developer account has a password, enter your personal credentials in `.env`:
+  ```ini
+  DB_USER=your_local_username
+  DB_PASS=your_local_password
+  ```
+- **Option C — Dedicated Project Database User (Recommended for Production & Least-Privilege):**
+  If you prefer a dedicated application user, execute the following in your MySQL/MariaDB CLI or phpMyAdmin:
+  ```sql
+  -- 1. Create the database (if not already created)
+  CREATE DATABASE IF NOT EXISTS `mowinton_db` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
--- 2. Create a dedicated application user
-CREATE USER 'mowinton_app'@'localhost' IDENTIFIED BY 'ChangeThisToYourSecurePassword!';
+  -- 2. Create a dedicated application user
+  CREATE USER IF NOT EXISTS 'mowinton_app'@'localhost' IDENTIFIED BY 'ChangeThisToYourSecurePassword!';
 
--- 3. Grant access strictly to mowinton_db
-GRANT ALL PRIVILEGES ON `mowinton_db`.* TO 'mowinton_app'@'localhost';
-FLUSH PRIVILEGES;
-```
+  -- 3. Grant privileges strictly on mowinton_db
+  GRANT ALL PRIVILEGES ON `mowinton_db`.* TO 'mowinton_app'@'localhost';
+  FLUSH PRIVILEGES;
+  ```
+
+> [!NOTE]
+> Because `.env` is strictly excluded in `.gitignore`, your local credentials remain completely private and will never be committed to Git. Different developers on the team can use different local usernames and passwords without conflicts.
 
 ### Step 2: Create Your Local `.env` File
 In `mowinton-website-starter/mowinton-website/`, copy `.env.example` to create `.env`:
@@ -184,35 +205,41 @@ cp .env.example .env
 ```
 
 ### Step 3: Configure Environment Variables
-Open `.env` in your editor and configure your dedicated credentials:
+Open `.env` in your editor and configure your local settings:
 
 ```ini
 # Application Environment (local or production)
 APP_ENV=local
 APP_URL=http://127.0.0.1:8000
 
-# Database Connection (Dedicated Application User)
+# Database Connection
 DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_NAME=mowinton_db
-DB_USER=mowinton_app
-DB_PASS=ChangeThisToYourSecurePassword!
+DB_USER=root
+DB_PASS=
 DB_CHARSET=utf8mb4
+
+# Resume Storage Directory (Optional)
+# Default: uploads/resumes inside project root.
+# On production (Hostinger), set to a directory outside public_html (e.g. ../storage/resumes)
+# RESUME_STORAGE_PATH=../storage/resumes
 
 # Administrative & Notification Settings (Optional)
 MAIL_TO=admin@mowinton.com
 ```
 
 | Variable | Description | Recommended Setting | Required? |
-| :--- | :--- | :--- | :---: |
+| :--- | :--- | :--- | :--- :--- |
 | `APP_ENV` | Application environment (`local` or `production`) | `local` | Recommended |
 | `APP_URL` | Base canonical URL of the application | `http://127.0.0.1:8000` | Recommended |
 | `DB_HOST` | Database server hostname or IP | `127.0.0.1` | **Yes** |
 | `DB_PORT` | Database server port | `3306` | **Yes** |
 | `DB_NAME` | Database schema name | `mowinton_db` | **Yes** |
-| `DB_USER` | Dedicated application user | `mowinton_app` | **Yes** |
-| `DB_PASS` | Application user password | *(Your chosen password)* | **Yes** |
+| `DB_USER` | Local DB user or dedicated production user | `root` (local) / `mowinton_app` (prod) | **Yes** |
+| `DB_PASS` | Database password | *(Your database password)* | **Yes** |
 | `DB_CHARSET`| Database character set | `utf8mb4` | **Yes** |
+| `RESUME_STORAGE_PATH`| Directory for candidate CV files | `uploads/resumes` (or `../storage/resumes`) | Optional |
 | `MAIL_TO` | Notification recipient email | `admin@mowinton.com` | Optional |
 
 ---
@@ -285,7 +312,7 @@ The script hashes the password using PHP's standard Bcrypt algorithm (`PASSWORD_
 ### Why Use `router.php`?
 PHP's built-in development server (`php -S`) does not read or enforce Apache/LiteSpeed `.htaccess` rules. Without a router script, requests for files on disk (such as uploaded CVs) could be served statically. 
 
-To guarantee that private resume uploads and internal scripts are **100% blocked with HTTP 403 Forbidden** during local development just as they are in production, always launch the development server with the included `router.php`.
+To ensure that direct requests to private resume uploads and internal scripts are blocked with HTTP 403 Forbidden during local development just as they are in production, launch the development server with the included `router.php`.
 
 ### Step 1: Launch Development Server
 From `mowinton-website-starter/mowinton-website/`, run:
@@ -305,9 +332,12 @@ php -S 127.0.0.1:8000 router.php
 Open an incognito browser tab or terminal and test direct file access:
 ```bash
 curl -I http://127.0.0.1:8000/uploads/resumes/
+curl -I http://127.0.0.1:8000/Uploads/resumes/
 curl -I http://127.0.0.1:8000/.env
+curl -I http://127.0.0.1:8000/database/schema.sql
+curl -I http://127.0.0.1:8000/backup.zip
 ```
-*(Both requests will return **HTTP/1.1 403 Forbidden**).*
+*(All sensitive requests will return **HTTP/1.1 403 Forbidden**).*
 
 ### Step 4: Stopping the Server
 Press `Ctrl + C` in the terminal to cleanly terminate the server process.
@@ -344,12 +374,16 @@ After starting the server, verify the complete workflow using synthetic test dat
 - [ ] Try direct URL access to the file path — verify it returns **403 Forbidden**.
 - [ ] Add an internal reviewer note and change candidate status to **Shortlisted**.
 
-### 5. Automated Regression Test Suite
-Run the automated Python end-to-end verification suite:
+### 5. Automated Regression & Security Test Suites
+Run the automated end-to-end and security audit test suites:
 ```bash
+# 1. End-to-End Workflow & RBAC Tests (26 tests)
 python scripts/test_admin_e2e.py
+
+# 2. Security, Direct File Access & Routing Tests (34 checks)
+python scripts/test_security_audit.py
 ```
-*(All 26 automated tests will execute and confirm 100% success).*
+*(Confirms 26/26 end-to-end tests and 34/34 security and routing audit checks pass with 100% success).*
 
 ---
 
@@ -365,6 +399,7 @@ MowintonWebsite/
 │   └── mowinton-consulting-AGBbZjJ9kpuxp8Gb.avif
 └── mowinton-website-starter/
     └── mowinton-website/                      # Web application document root
+        ├── .htaccess                          # Apache / LiteSpeed web server security configuration
         ├── router.php                         # Local development server security router
         ├── index.php                          # Reconstructed Homepage
         ├── about/index.php                    # About Us, Google Maps embed & FAQs
@@ -392,19 +427,23 @@ MowintonWebsite/
         │   ├── admin-header.php               # Admin navigation & sidebar
         │   └── admin-footer.php               # Admin scripts & modals
         ├── includes/                          # Shared PHP Backend Components
-        │   ├── db.php                         # PDO database connection & logger
+        │   ├── index.php                      # 403 Forbidden directory guard
+        │   ├── db.php                         # PDO database connection, env & CV storage helper
         │   ├── auth.php                       # Session, RBAC, CSRF & rate limiter
         │   ├── header.php                     # Public site global header
         │   ├── footer.php                     # Public site global footer
         │   ├── process_contact.php            # Contact form handler
         │   └── process_job_application.php    # Job application & upload handler
         ├── database/
+        │   ├── index.php                      # 403 Forbidden directory guard
         │   └── schema.sql                     # Full MySQL schema definitions (7 tables)
         ├── scripts/                           # CLI Management & Test Utilities
+        │   ├── index.php                      # 403 Forbidden directory guard
         │   ├── migrate.php                    # Safe database migration runner
         │   ├── create_admin.php               # CLI administrator account creator
         │   ├── check_status.php               # Health check for DB & admin users
-        │   └── test_admin_e2e.py              # 26 automated end-to-end tests
+        │   ├── test_admin_e2e.py              # 26 automated end-to-end tests
+        │   └── test_security_audit.py         # 34 security, routing & file-blocking checks
         ├── css/
         │   ├── style.css                      # Master public stylesheet
         │   └── admin.css                      # Admin dashboard stylesheet
@@ -487,28 +526,60 @@ Before touching production, create a staging subdomain in hPanel (e.g., `staging
 
 ### Step 3: Pre-Deployment Backup Strategy
 Before performing live cutover on production:
-1. **Database Backup:** In hPanel, go to **Databases > phpMyAdmin**, select database, and click **Export** (or run `mysqldump`). Save the SQL file locally.
-2. **File System Snapshot:** In hPanel **File Manager**, select the existing `public_html/` folder and create a ZIP archive named `backup_pre_deploy_YYYYMMDD.zip`.
+1. **Database Backup:** In hPanel, go to **Databases > phpMyAdmin**, select database, and click **Export** (or run `mysqldump`). Save the SQL file strictly outside the public web root (e.g. in your hosting home directory `../backups/`, never inside `public_html/`).
+2. **File System Snapshot:** In hPanel **File Manager**, select the existing `public_html/` folder and create a ZIP archive saved in `../backups/backup_pre_deploy_YYYYMMDD.zip` (strictly outside the public web root).
 
-### Step 4: Production Rollback Procedure
-If any fatal issue occurs during production cutover, execute this immediate rollback:
-1. Delete the failed files from `public_html/`.
-2. Extract `backup_pre_deploy_YYYYMMDD.zip` back into `public_html/`.
-3. In phpMyAdmin, drop the tables and import the pre-deployment database SQL backup.
-4. Verify the site restores to its previous operational state.
+### Step 4: Safe Production Rollback Procedures
+If a release issue occurs after deployment, follow a prioritized, safety-first rollback procedure. **Do not automatically drop or overwrite database tables**, as doing so can permanently destroy genuine inquiries and job applications submitted since the backup was taken.
+
+#### 1. Code-Only Rollback (Recommended First Step)
+Most deployment failures are code-related (e.g., PHP syntax errors, missing asset paths, or configuration mismatches). In nearly all cases, restoring previous application code resolves the issue without touching data:
+1. In Hostinger hPanel **File Manager**, rename the current `public_html/` to `public_html_failed/`.
+2. Extract your pre-deployment code archive (`../backups/backup_pre_deploy_YYYYMMDD.zip`) into `public_html/`.
+3. **Preserve Production State:** Ensure that code rollback does NOT delete or overwrite your active production `.env` file or uploaded candidate resumes (`uploads/resumes/`). Copy the active `.env` and `uploads/resumes/` directory from `public_html_failed/` into the newly restored `public_html/`.
+4. Test the public pages and Admin Login immediately.
+
+#### 2. Database Rollback Precautions & Separate Handling
+Database schema or data rollbacks must be evaluated and handled **separately from code rollback**.
+- **Data Loss Risk:** Restoring an older database backup will overwrite the `contact_messages` and `job_applications` tables. Any customer inquiries or candidate applications submitted between the backup timestamp and the rollback will be permanently lost!
+- **Mandatory Safety Backup:** If a database rollback is deemed unavoidable, **you must create a fresh backup of the current live database first** (via phpMyAdmin or `mysqldump`) to capture any newly submitted messages or candidate records.
+- **Explicit Approval Required:** Never drop tables or restore older database snapshots without explicit owner/stakeholder authorization.
+- **Selective Data Restoration:** If a schema rollback is required, prefer running specific `ALTER TABLE` statements or restoring only structural definitions rather than wiping all tables and application data.
+
+#### 3. Post-Rollback Verification Steps
+Once application files (and, if authorized, database structures) are restored:
+1. Open the public homepage and check for HTTP 200 responses and visual layout integrity.
+2. Visit `/admin/login.php` and verify administrative authentication.
+3. Check the recent entries in **Contact Messages** and **Job Applications** to confirm existing records remain intact.
+4. Submit one synthetic inquiry to verify that form processing and database persistence are operational.
+5. Review Hostinger error logs in hPanel under **Advanced > Error Logs** to ensure no active PHP fatal errors or warnings.
 
 ### Step 5: Protect Internal Files via Root `.htaccess`
-Hostinger uses **LiteSpeed Web Server**, which natively parses and enforces Apache `.htaccess` directives. Create or verify `.htaccess` in `public_html/` to prevent external access to internal files and directories:
+Hostinger uses **LiteSpeed Web Server**, which natively parses and enforces Apache `.htaccess` directives. A production-ready `.htaccess` is included in the project root:
 
 ```apache
-# Block direct access to configuration and migration files
-<FilesMatch "^\.env|schema\.sql">
+# 1. Disable Directory Indexing
+Options -Indexes
+
+# 2. Block direct web access to hidden files (.env, .git)
+<FilesMatch "^\.">
     Require all denied
 </FilesMatch>
 
-# Block direct access to internal utility directories
-RedirectMatch 403 ^/(scripts|database|includes)/
+# 3. Block sensitive file extensions (configs, databases, dumps, backups, shell scripts, markdown docs)
+<FilesMatch "(?i)\.(env|sql|log|md|ini|conf|bak|backup|zip|tar|gz|tgz|sh|bat|cmd)$">
+    Require all denied
+</FilesMatch>
+
+# 4. Deny direct access to internal code and private upload directories
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^(includes|database|scripts|storage|uploads/resumes)(/.*)?$ - [F,L,NC]
+</IfModule>
 ```
+
+> [!NOTE]
+> Web server `.htaccess` enforcement must be explicitly verified in the Hostinger staging environment prior to production cutover by testing direct URLs (e.g. `https://staging.mowinton.com/.env` and `https://staging.mowinton.com/uploads/resumes/`).
 
 ### Step 6: Import Database Schema & Configure Credentials
 1. Open **phpMyAdmin** for your production database.

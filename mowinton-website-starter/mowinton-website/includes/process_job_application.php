@@ -95,15 +95,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['job_application_submi
                         $file_ext  = strtolower(pathinfo($original_filename, PATHINFO_EXTENSION));
                         $allowed_exts = ['pdf', 'doc', 'docx'];
 
-                        // Max 5MB
-                        if ($file_size > 5 * 1024 * 1024) {
+                        // Max 10MB
+                        if ($file_size > 10 * 1024 * 1024) {
                             $upload_ok = false;
-                            $response['message'] = 'The uploaded file is too large. Maximum allowed size is 5MB.';
+                            $response['message'] = 'The uploaded file is too large. Maximum allowed size is 10MB.';
                         } elseif (!in_array($file_ext, $allowed_exts, true)) {
                             $upload_ok = false;
                             $response['message'] = 'Invalid file format. Please upload a PDF, DOC, or DOCX file.';
                         } else {
-                            $target_dir = __DIR__ . '/../uploads/resumes/';
+                            $target_dir = rtrim(get_resume_storage_path(), '/\\') . DIRECTORY_SEPARATOR;
                             if (!is_dir($target_dir)) {
                                 mkdir($target_dir, 0755, true);
                             }
