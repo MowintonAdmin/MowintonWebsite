@@ -16,7 +16,7 @@ This guide provides deep technical instructions for configuring, managing, and m
 
 ## 2. Database Schema (7 Core Tables)
 
-All tables are defined in [`database/schema.sql`](file:///database/schema.sql):
+All tables are defined in [`database/schema.sql`](database/schema.sql):
 
 ### 2.1 `admin_users`
 Stores authenticated staff and super administrators.
@@ -115,7 +115,20 @@ php scripts/check_status.php
 
 ---
 
-## 4. Environment Variables Reference
+## 4. Dedicated Least-Privilege Database User Setup
+
+For both local security and production readiness, **never connect your application as `root` with an empty password**. Always create a dedicated application user with access restricted strictly to `mowinton_db`:
+
+```sql
+-- Run in MySQL/MariaDB client:
+CREATE USER 'mowinton_app'@'localhost' IDENTIFIED BY 'ChangeThisToYourSecurePassword!';
+GRANT ALL PRIVILEGES ON mowinton_db.* TO 'mowinton_app'@'localhost';
+FLUSH PRIVILEGES;
+```
+
+---
+
+## 5. Environment Variables Reference
 
 Create a `.env` file in `mowinton-website-starter/mowinton-website/` by copying `.env.example`:
 
@@ -127,12 +140,12 @@ APP_URL=http://127.0.0.1:8000
 DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_NAME=mowinton_db
-DB_USER=root
-DB_PASS=
+DB_USER=mowinton_app
+DB_PASS=ChangeThisToYourSecurePassword!
 DB_CHARSET=utf8mb4
 
 # Notifications
 MAIL_TO=admin@mowinton.com
 ```
 
-If `.env` is omitted, `includes/db.php` will default to `127.0.0.1:3306`, database `mowinton_db`, user `root`, empty password.
+If `.env` is omitted, `includes/db.php` will default to `127.0.0.1:3306`, database `mowinton_db`, user `root`, empty password for quick local development testing.

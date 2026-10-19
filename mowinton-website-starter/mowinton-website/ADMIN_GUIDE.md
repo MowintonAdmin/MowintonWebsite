@@ -48,9 +48,12 @@ The script will prompt for:
 4. **Role:** `super_admin` (1) or `staff` (2).
 5. **Password:** Minimum 8 characters.
 
-*Tip: You can also pass parameters non-interactively:*
+> [!IMPORTANT]
+> **Security Best Practice:** Always enter passwords interactively at the command prompt. Entering passwords via command-line flags exposes sensitive credentials in your shell history (`.bash_history`, PowerShell history) and process listings.
+
+Non-password flags can be pre-filled if desired, with the password prompted securely:
 ```bash
-php scripts/create_admin.php --username=hr_lead --email=hr@mowinton.com --role=staff --name="HR Lead" --password="SecurePassword123!"
+php scripts/create_admin.php --username=hr_lead --email=hr@mowinton.com --role=staff --name="HR Lead"
 ```
 
 ---
