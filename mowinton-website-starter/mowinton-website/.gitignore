@@ -1,0 +1,10 @@
+.env
+.env.*
+!.env.example
+/vendor/
+/node_modules/
+/uploads/
+/storage/private/
+*.sql
+*.log
+.DS_Store

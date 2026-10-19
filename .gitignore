@@ -1,0 +1,14 @@
+# Ignore uploaded applicant CVs
+mowinton-website-starter/mowinton-website/uploads/resumes/*.pdf
+mowinton-website-starter/mowinton-website/uploads/resumes/*.docx
+mowinton-website-starter/mowinton-website/uploads/resumes/*.doc
+!mowinton-website-starter/mowinton-website/uploads/resumes/.htaccess
+!mowinton-website-starter/mowinton-website/uploads/resumes/index.php
+
+# Python cache & temp files
+__pycache__/
+*.pyc
+
+# OS generated files
+.DS_Store
+Thumbs.db
