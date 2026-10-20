@@ -16,7 +16,7 @@ This guide provides deep technical instructions for configuring, managing, and m
 
 ## 2. Database Schema (7 Core Tables)
 
-All tables are defined in [`database/schema.sql`](database/schema.sql):
+All tables are defined in [`database/schema.sql`](database/schema.sql) (for local development & CLI migration) and [`database/schema_hostinger.sql`](database/schema_hostinger.sql) (for Hostinger/cPanel phpMyAdmin import without `CREATE DATABASE` statements):
 
 ### 2.1 `admin_users`
 Stores authenticated staff and super administrators.
@@ -112,6 +112,16 @@ php scripts/migrate.php
 # Check database tables, record counts and admin users
 php scripts/check_status.php
 ```
+
+### 3.1 Hostinger / Shared Hosting Import via phpMyAdmin
+On shared hosting such as Hostinger, database creation is restricted by the hosting provider. Importing `database/schema.sql` will fail with `MySQL Error #1044 (Access denied for CREATE DATABASE)`.
+
+**To import into Hostinger staging or production:**
+1. Open phpMyAdmin from hPanel.
+2. Select your designated database (e.g. `u981051719_mow_stg`) in the left sidebar.
+3. Click the **Import** tab.
+4. Select `database/schema_hostinger.sql` and click **Import**.
+5. This builds all 7 core tables and default `system_settings` directly in the active database without running `CREATE DATABASE` or `USE`.
 
 ---
 

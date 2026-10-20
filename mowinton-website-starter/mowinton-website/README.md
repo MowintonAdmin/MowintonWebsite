@@ -264,6 +264,9 @@ php scripts/migrate.php
 3. Executes `database/schema.sql` safely (`CREATE TABLE IF NOT EXISTS`).
 4. Verifies the existence of all 7 core tables and reports table row counts.
 
+> [!NOTE]
+> `database/schema.sql` contains `CREATE DATABASE IF NOT EXISTS mowinton_db; USE mowinton_db;` for local CLI setup. For shared hosting environments such as Hostinger (where database creation privileges are restricted), use `database/schema_hostinger.sql` via phpMyAdmin instead (see [Section 12, Step 6](#step-6-import-database-schema--configure-credentials)).
+
 ### Step 3: Verify Database Status
 Run the health check utility:
 ```bash
@@ -436,7 +439,8 @@ MowintonWebsite/
         │   └── process_job_application.php    # Job application & upload handler
         ├── database/
         │   ├── index.php                      # 403 Forbidden directory guard
-        │   └── schema.sql                     # Full MySQL schema definitions (7 tables)
+        │   ├── schema.sql                     # Full MySQL schema definitions (7 tables, local CLI migration)
+        │   └── schema_hostinger.sql           # Hostinger/phpMyAdmin import schema (no CREATE/USE DB)
         ├── scripts/                           # CLI Management & Test Utilities
         │   ├── index.php                      # 403 Forbidden directory guard
         │   ├── migrate.php                    # Safe database migration runner
@@ -582,9 +586,20 @@ Options -Indexes
 > Web server `.htaccess` enforcement must be explicitly verified in the Hostinger staging environment prior to production cutover by testing direct URLs (e.g. `https://staging.mowinton.com/.env` and `https://staging.mowinton.com/uploads/resumes/`).
 
 ### Step 6: Import Database Schema & Configure Credentials
-1. Open **phpMyAdmin** for your production database.
-2. Import `database/schema.sql`.
-3. Create `.env` in `public_html/` with production database credentials.
+
+> [!IMPORTANT]
+> **Hostinger / Shared Hosting Schema Notice (Prevents Error #1044):**
+> Shared hosting accounts (including Hostinger) assign pre-created databases (e.g. `u981051719_mow_stg`) and restrict global `CREATE DATABASE` privileges.
+> - **Do NOT** import `database/schema.sql` in phpMyAdmin — it contains `CREATE DATABASE IF NOT EXISTS mowinton_db; USE mowinton_db;` and will fail with `MySQL Error #1044: Access denied`.
+> - **DO** import **`database/schema_hostinger.sql`** — it is specifically tailored for Hostinger, creating all 7 tables and default system configurations directly inside whichever database is selected, without database-level creation statements or sensitive test data.
+
+1. Open **phpMyAdmin** in your Hostinger control panel (hPanel > Databases).
+2. Click your target staging or production database in the left sidebar (e.g., `u981051719_mow_stg`) so it is selected and active.
+3. Click the **Import** tab at the top.
+4. Under "File to import", click **Choose File** and select `database/schema_hostinger.sql`.
+5. Scroll down and click **Import** (or **Go**).
+6. Verify that all 7 tables are created (`admin_users`, `contact_messages`, `job_applications`, `application_notes`, `audit_logs`, `system_settings`, `login_rate_limits`).
+7. Create `.env` in `public_html/` with your Hostinger database credentials (`DB_HOST=localhost`, `DB_NAME=u981051719_mow_stg`, `DB_USER=...`, `DB_PASS=...`).
 
 ### Step 7: Directory Permissions & Private Resume Storage
 1. Ensure `uploads/resumes/` permission is set to `755` (writable by PHP).
@@ -606,6 +621,7 @@ Run `scripts/create_admin.php` via SSH command line to create the production Sup
 | :--- | :--- | :--- |
 | **`php: command not found`** | PHP binary is not in system PATH | Add PHP directory (e.g., `C:\php` or `/usr/bin/php`) to system Environment Variables. |
 | **`could not find driver`** | `pdo_mysql` extension disabled | Open `php.ini`, remove the `;` before `extension=pdo_mysql`, and restart terminal. |
+| **`MySQL Error #1044`** | `CREATE DATABASE` executed without permission on shared hosting | In phpMyAdmin, do not import `schema.sql`. Select your database first and import `database/schema_hostinger.sql` instead. |
 | **`Connection refused [2002]`** | MariaDB/MySQL is not running | Start your MariaDB or MySQL service (or start MySQL in XAMPP control panel). |
 | **`Access denied for user`** | Incorrect username or password | Check `.env` and verify `DB_USER` and `DB_PASS` match your local MySQL configuration. |
 | **`Base table or view not found`** | Migration has not been executed | Run `php scripts/migrate.php` to initialize the database schema. |
