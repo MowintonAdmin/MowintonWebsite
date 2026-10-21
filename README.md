@@ -109,12 +109,13 @@ Open the repository in your preferred editor (VS Code, Google Antigravity, or Ph
 code .
 ```
 
-### Step 4: Navigate to the Website Application Folder
-The root repository contains the overall project. The runnable web application lives inside `mowinton-website-starter/mowinton-website`:
+### Step 4: Verify Repository Root
+The web application is located directly at the repository root. Ensure your terminal is in the repository root directory:
 ```bash
-cd mowinton-website-starter/mowinton-website
+# You are in the repository root:
+# MowintonWebsite/
 ```
-*(All remaining commands in this guide are executed from inside this directory.)*
+*(All commands in this guide are executed from this repository root directory.)*
 
 ---
 
@@ -192,7 +193,7 @@ The website connects to MySQL / MariaDB strictly via the parameters configured i
 > Because `.env` is strictly excluded in `.gitignore`, your local credentials remain completely private and will never be committed to Git. Different developers on the team can use different local usernames and passwords without conflicts.
 
 ### Step 2: Create Your Local `.env` File
-In `mowinton-website-starter/mowinton-website/`, copy `.env.example` to create `.env`:
+In the repository root, copy `.env.example` to create `.env`:
 
 **Windows (PowerShell):**
 ```powershell
@@ -253,7 +254,7 @@ MAIL_TO=admin@mowinton.com
 - **Linux:** `sudo systemctl start mariadb` or `sudo systemctl start mysql`
 
 ### Step 2: Run Automated Migration Script
-Execute the project's migration script from `mowinton-website-starter/mowinton-website/`:
+Execute the project's migration script from the repository root:
 ```bash
 php scripts/migrate.php
 ```
@@ -318,7 +319,7 @@ PHP's built-in development server (`php -S`) does not read or enforce Apache/Lit
 To ensure that direct requests to private resume uploads and internal scripts are blocked with HTTP 403 Forbidden during local development just as they are in production, launch the development server with the included `router.php`.
 
 ### Step 1: Launch Development Server
-From `mowinton-website-starter/mowinton-website/`, run:
+From the repository root, run:
 ```bash
 php -S 127.0.0.1:8000 router.php
 ```
@@ -394,81 +395,75 @@ python scripts/test_security_audit.py
 
 ```text
 MowintonWebsite/
-├── .gitignore                                 # Git ignore rules for root repository
-├── .env.example                               # Root environment configuration template
-├── README.md                                  # Master repository documentation (this file)
+├── .htaccess                          # Apache / LiteSpeed web server security configuration
+├── router.php                         # Local development server security router
+├── index.php                          # Homepage entry point
+├── .env.example                       # Environment configuration template
+├── .gitignore                         # Git ignore rules
+├── README.md                          # Master repository documentation (this file)
+├── ADMIN_GUIDE.md                     # Administrator operations manual
+├── BACKEND_SETUP.md                   # Database schema & technical guide
+├── IMAGE_REPLACEMENT_GUIDE.md         # Image replacement inventory
+├── VISUAL_REVIEW_NOTES.md             # Visual & responsive review notes
+├── PHASE6_TEST_REPORT.md              # Test execution evidence report
+├── PROJECT_REQUIREMENTS.md            # Reconstruction project specifications
+├── TASKS.md                           # Development & verification checklist
+├── about/index.php                    # About Us, Google Maps embed & FAQs
+├── services/index.php                 # Services & Google Reviews carousel
+├── careers-2/index.php                # Careers listing & application form
+├── internship-program/index.php       # Internship Program & roadmap
+├── interview-guide/index.php          # Interview Preparation Guide
+├── submit-job-application/index.php   # Standalone Job Application portal
+├── news-insights/index.php            # Thought leadership articles
+├── project-manager-jd/index.php       # Project Manager JD
+├── software-engineer-jd/index.php     # Software Engineer JD
+├── technical-lead/index.php           # Technical Lead JD
+├── qa-engineer-jd/index.php           # QA Engineer JD
+├── business-analyst-jd/index.php      # Business Analyst JD
+├── intern-digital-marketing/index.php # Intern – Digital Marketing JD
+├── admin/                             # Protected Admin Dashboard Portal
+│   ├── index.php                      # Dashboard Overview metrics
+│   ├── login.php                      # Secure login interface
+│   ├── logout.php                     # Session termination endpoint
+│   ├── messages.php                   # Contact inquiries management
+│   ├── applications.php               # Job applications review list
+│   ├── application-details.php        # Applicant file, notes & status
+│   ├── settings.php                   # Staff accounts & audit logs
+│   ├── download-resume.php            # Authenticated CV streaming
+│   ├── admin-header.php               # Admin navigation & sidebar
+│   └── admin-footer.php               # Admin scripts & modals
+├── includes/                          # Shared PHP Backend Components
+│   ├── index.php                      # 403 Forbidden directory guard
+│   ├── db.php                         # PDO database connection, env & CV storage helper
+│   ├── auth.php                       # Session, RBAC, CSRF & rate limiter
+│   ├── header.php                     # Public site global header
+│   ├── footer.php                     # Public site global footer
+│   ├── process_contact.php            # Contact form handler
+│   └── process_job_application.php    # Job application & upload handler
+├── database/
+│   ├── index.php                      # 403 Forbidden directory guard
+│   ├── schema.sql                     # Full MySQL schema definitions (7 tables, local CLI migration)
+│   └── schema_hostinger.sql           # Hostinger/phpMyAdmin import schema (no CREATE/USE DB)
+├── scripts/                           # CLI Management & Test Utilities
+│   ├── index.php                      # 403 Forbidden directory guard
+│   ├── migrate.php                    # Safe database migration runner
+│   ├── create_admin.php               # CLI administrator account creator
+│   ├── check_status.php               # Health check for DB & admin users
+│   ├── test_admin_e2e.py              # 26 automated end-to-end tests
+│   └── test_security_audit.py         # 34 security, routing & file-blocking checks
+├── css/
+│   ├── style.css                      # Master public stylesheet
+│   └── admin.css                      # Admin dashboard stylesheet
+├── js/
+│   └── main.js                        # Navigation, mobile drawer, reviews carousel
 ├── img/
-│   ├── mowinton-consulting-AGBbZjJ9kpuxp8Gb.jpg # Official Mowinton logo asset
-│   └── mowinton-consulting-AGBbZjJ9kpuxp8Gb.avif
-└── mowinton-website-starter/
-    └── mowinton-website/                      # Web application document root
-        ├── .htaccess                          # Apache / LiteSpeed web server security configuration
-        ├── router.php                         # Local development server security router
-        ├── index.php                          # Reconstructed Homepage
-        ├── about/index.php                    # About Us, Google Maps embed & FAQs
-        ├── services/index.php                 # Services & Google Reviews carousel
-        ├── careers-2/index.php                # Careers listing & application form
-        ├── internship-program/index.php       # Internship Program & roadmap
-        ├── interview-guide/index.php          # Interview Preparation Guide
-        ├── submit-job-application/index.php   # Standalone Job Application portal
-        ├── news-insights/index.php            # Thought leadership articles
-        ├── project-manager-jd/index.php       # Project Manager JD
-        ├── software-engineer-jd/index.php     # Software Engineer JD
-        ├── technical-lead/index.php           # Technical Lead JD
-        ├── qa-engineer-jd/index.php           # QA Engineer JD
-        ├── business-analyst-jd/index.php      # Business Analyst JD
-        ├── intern-digital-marketing/index.php # Intern – Digital Marketing JD
-        ├── admin/                             # Protected Admin Dashboard Portal
-        │   ├── index.php                      # Dashboard Overview metrics
-        │   ├── login.php                      # Secure login interface
-        │   ├── logout.php                     # Session termination endpoint
-        │   ├── messages.php                   # Contact inquiries management
-        │   ├── applications.php               # Job applications review list
-        │   ├── application-details.php        # Applicant file, notes & status
-        │   ├── settings.php                   # Staff accounts & audit logs
-        │   ├── download-resume.php            # Authenticated CV streaming
-        │   ├── admin-header.php               # Admin navigation & sidebar
-        │   └── admin-footer.php               # Admin scripts & modals
-        ├── includes/                          # Shared PHP Backend Components
-        │   ├── index.php                      # 403 Forbidden directory guard
-        │   ├── db.php                         # PDO database connection, env & CV storage helper
-        │   ├── auth.php                       # Session, RBAC, CSRF & rate limiter
-        │   ├── header.php                     # Public site global header
-        │   ├── footer.php                     # Public site global footer
-        │   ├── process_contact.php            # Contact form handler
-        │   └── process_job_application.php    # Job application & upload handler
-        ├── database/
-        │   ├── index.php                      # 403 Forbidden directory guard
-        │   ├── schema.sql                     # Full MySQL schema definitions (7 tables, local CLI migration)
-        │   └── schema_hostinger.sql           # Hostinger/phpMyAdmin import schema (no CREATE/USE DB)
-        ├── scripts/                           # CLI Management & Test Utilities
-        │   ├── index.php                      # 403 Forbidden directory guard
-        │   ├── migrate.php                    # Safe database migration runner
-        │   ├── create_admin.php               # CLI administrator account creator
-        │   ├── check_status.php               # Health check for DB & admin users
-        │   ├── test_admin_e2e.py              # 26 automated end-to-end tests
-        │   └── test_security_audit.py         # 34 security, routing & file-blocking checks
-        ├── css/
-        │   ├── style.css                      # Master public stylesheet
-        │   └── admin.css                      # Admin dashboard stylesheet
-        ├── js/
-        │   └── main.js                        # Navigation, mobile drawer, reviews carousel
-        ├── img/
-        │   ├── mowinton-consulting-AGBbZjJ9kpuxp8Gb.jpg # In-app logo reference
-        │   └── placeholders/                  # Neutral SVG placeholders (22 assets)
-        ├── uploads/
-        │   └── resumes/                       # Private CV storage directory
-        │       ├── .htaccess                  # Apache / LiteSpeed 403 Forbidden block
-        │       └── index.php                  # Fallback 403 Forbidden header
-        ├── .env.example                       # Application environment template
-        ├── .gitignore                         # Application-level git ignore rules
-        ├── ADMIN_GUIDE.md                     # Administrator operations manual
-        ├── BACKEND_SETUP.md                   # Database schema & technical guide
-        ├── IMAGE_REPLACEMENT_GUIDE.md         # Image replacement inventory
-        ├── VISUAL_REVIEW_NOTES.md             # Visual & responsive review notes
-        ├── PHASE6_TEST_REPORT.md              # Test execution evidence report
-        ├── PROJECT_REQUIREMENTS.md            # Reconstruction project specifications
-        └── TASKS.md                           # Development & verification checklist
+│   ├── mowinton-consulting-AGBbZjJ9kpuxp8Gb.jpg  # Official Mowinton logo asset
+│   ├── mowinton-consulting-AGBbZjJ9kpuxp8Gb.avif # Modern AVIF format
+│   └── placeholders/                  # Neutral SVG placeholders (22 assets)
+└── uploads/
+    └── resumes/                       # Private CV storage directory
+        ├── .htaccess                  # Apache / LiteSpeed 403 Forbidden block
+        └── index.php                  # Fallback 403 Forbidden header
 ```
 
 ---
@@ -625,7 +620,7 @@ Run `scripts/create_admin.php` via SSH command line to create the production Sup
 | **`Connection refused [2002]`** | MariaDB/MySQL is not running | Start your MariaDB or MySQL service (or start MySQL in XAMPP control panel). |
 | **`Access denied for user`** | Incorrect username or password | Check `.env` and verify `DB_USER` and `DB_PASS` match your local MySQL configuration. |
 | **`Base table or view not found`** | Migration has not been executed | Run `php scripts/migrate.php` to initialize the database schema. |
-| **`Failed to open stream`** | Running command from wrong directory | Always run commands from `mowinton-website-starter/mowinton-website/`. |
+| **`Failed to open stream`** | Running command from wrong directory | Always run commands from the repository root directory. |
 | **`Address already in use: 8000`**| Another process using port 8000 | Run on another port: `php -S 127.0.0.1:8080 router.php`. |
 | **`File upload failed`** | Permissions or file size limit | Ensure `uploads/resumes/` exists and is writable (`chmod 755`). Check `upload_max_filesize` in `php.ini`. |
 | **`403 Forbidden` on resume** | Expected security behavior | Resumes cannot be accessed via direct URL. Download via Admin Details page. |
@@ -659,10 +654,10 @@ Run `scripts/create_admin.php` via SSH command line to create the production Sup
 ## 15. Documentation Index
 
 The following project manuals are available within the repository:
-- **Admin Operations Manual:** [`ADMIN_GUIDE.md`](mowinton-website-starter/mowinton-website/ADMIN_GUIDE.md)
-- **Database & Backend Architecture Guide:** [`BACKEND_SETUP.md`](mowinton-website-starter/mowinton-website/BACKEND_SETUP.md)
-- **Image Replacement Specifications:** [`IMAGE_REPLACEMENT_GUIDE.md`](mowinton-website-starter/mowinton-website/IMAGE_REPLACEMENT_GUIDE.md)
-- **Visual & Typography Review Notes:** [`VISUAL_REVIEW_NOTES.md`](mowinton-website-starter/mowinton-website/VISUAL_REVIEW_NOTES.md)
-- **Phase 6 Verification Report:** [`PHASE6_TEST_REPORT.md`](mowinton-website-starter/mowinton-website/PHASE6_TEST_REPORT.md)
-- **Project Requirements & Scope:** [`PROJECT_REQUIREMENTS.md`](mowinton-website-starter/mowinton-website/PROJECT_REQUIREMENTS.md)
-- **Task Verification Checklist:** [`TASKS.md`](mowinton-website-starter/mowinton-website/TASKS.md)
+- **Admin Operations Manual:** [`ADMIN_GUIDE.md`](ADMIN_GUIDE.md)
+- **Database & Backend Architecture Guide:** [`BACKEND_SETUP.md`](BACKEND_SETUP.md)
+- **Image Replacement Specifications:** [`IMAGE_REPLACEMENT_GUIDE.md`](IMAGE_REPLACEMENT_GUIDE.md)
+- **Visual & Typography Review Notes:** [`VISUAL_REVIEW_NOTES.md`](VISUAL_REVIEW_NOTES.md)
+- **Phase 6 Verification Report:** [`PHASE6_TEST_REPORT.md`](PHASE6_TEST_REPORT.md)
+- **Project Requirements & Scope:** [`PROJECT_REQUIREMENTS.md`](PROJECT_REQUIREMENTS.md)
+- **Task Verification Checklist:** [`TASKS.md`](TASKS.md)
