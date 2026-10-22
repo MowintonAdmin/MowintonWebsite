@@ -36,6 +36,10 @@ if (!function_exists('load_env_file')) {
 }
 load_env_file();
 
+// Enforce application timezone (Mowinton Consulting is based in Selangor, Malaysia: UTC+8)
+$appTimezone = getenv('APP_TIMEZONE') ?: 'Asia/Kuala_Lumpur';
+date_default_timezone_set($appTimezone);
+
 /**
  * Returns the PDO Database Connection.
  *
@@ -54,6 +58,18 @@ function get_db_connection(): PDO {
     $pass    = getenv('DB_PASS') !== false ? getenv('DB_PASS') : '';
     $charset = getenv('DB_CHARSET') ?: 'utf8mb4';
 
+    // Compute timezone offset (e.g. '+08:00') for MySQL session
+    $appTimezone = getenv('APP_TIMEZONE') ?: 'Asia/Kuala_Lumpur';
+    try {
+        $tz = new DateTimeZone($appTimezone);
+        $offsetSec = $tz->getOffset(new DateTime('now', new DateTimeZone('UTC')));
+        $tzHours = intdiv($offsetSec, 3600);
+        $tzMinutes = abs($offsetSec % 3600) / 60;
+        $tzOffset = sprintf('%+03d:%02d', $tzHours, $tzMinutes);
+    } catch (Exception $e) {
+        $tzOffset = '+08:00';
+    }
+
     $dsn = "mysql:host={$host};port={$port};dbname={$dbname};charset={$charset}";
     $options = [
         PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
@@ -63,6 +79,7 @@ function get_db_connection(): PDO {
 
     try {
         $pdo = new PDO($dsn, $user, $pass, $options);
+        $pdo->exec("SET time_zone = '{$tzOffset}'");
         return $pdo;
     } catch (PDOException $e) {
         error_log('Database Connection Error: ' . $e->getMessage());
