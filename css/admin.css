@@ -272,6 +272,8 @@ body.admin-body {
   position: sticky;
   top: 0;
   height: 100vh;
+  max-height: 100vh;
+  align-self: flex-start;
 }
 
 .admin-sidebar-header {

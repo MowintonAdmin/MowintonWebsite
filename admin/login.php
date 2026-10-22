@@ -61,8 +61,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Admin CSS -->
-    <link rel="stylesheet" href="/css/admin.css">
+    <!-- Admin CSS with automatic cache-buster -->
+    <link rel="stylesheet" href="/css/admin.css?v=<?php echo file_exists(__DIR__ . '/../css/admin.css') ? filemtime(__DIR__ . '/../css/admin.css') : '2.0'; ?>">
 </head>
 <body class="admin-body">
 
