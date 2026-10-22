@@ -136,6 +136,58 @@ document.addEventListener('DOMContentLoaded', () => {
         formAlert.style.display = 'block';
         formAlert.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
+
+    // --- Career Photo Carousel (2-Second Auto Transition) ---
+    const careerCarousel = document.getElementById('careerPhotoCarousel');
+    if (careerCarousel) {
+        const slides = careerCarousel.querySelectorAll('.career-slide');
+        const dots = careerCarousel.querySelectorAll('.career-dot');
+        let currentIndex = 0;
+        let carouselTimer = null;
+        const intervalTime = 2000; // 2 seconds per slide
+
+        function showSlide(index) {
+            if (!slides.length) return;
+            currentIndex = (index + slides.length) % slides.length;
+            slides.forEach((slide, idx) => {
+                slide.classList.toggle('active', idx === currentIndex);
+            });
+            dots.forEach((dot, idx) => {
+                dot.classList.toggle('active', idx === currentIndex);
+            });
+        }
+
+        function startAutoPlay() {
+            stopAutoPlay();
+            carouselTimer = setInterval(() => {
+                showSlide(currentIndex + 1);
+            }, intervalTime);
+        }
+
+        function stopAutoPlay() {
+            if (carouselTimer) {
+                clearInterval(carouselTimer);
+                carouselTimer = null;
+            }
+        }
+
+        // Click dots to navigate immediately
+        dots.forEach((dot, idx) => {
+            dot.addEventListener('click', () => {
+                showSlide(idx);
+                startAutoPlay();
+            });
+        });
+
+        // Pause on mouse hover / touch, resume on leave
+        careerCarousel.addEventListener('mouseenter', stopAutoPlay);
+        careerCarousel.addEventListener('mouseleave', startAutoPlay);
+        careerCarousel.addEventListener('touchstart', stopAutoPlay, { passive: true });
+        careerCarousel.addEventListener('touchend', startAutoPlay, { passive: true });
+
+        // Start 2-second automatic loop
+        startAutoPlay();
+    }
 });
 
 // Inline spinner keyframes

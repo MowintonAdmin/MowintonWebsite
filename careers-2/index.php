@@ -35,12 +35,51 @@ require_once __DIR__ . '/../includes/header.php';
                 </div>
 
                 <div class="career-photo-area">
-                    <div class="career-photo-card">
-                        <img src="<?php echo $base_url; ?>/img/groupimage-300x284.webp" 
-                             alt="Mowinton Consulting Team" 
-                             width="500" 
-                             height="280" 
-                             loading="lazy">
+                    <div class="career-photo-card career-carousel" id="careerPhotoCarousel" aria-label="Mowinton Team Gallery">
+                        <div class="career-carousel-slides">
+                            <div class="career-slide active">
+                                <img src="<?php echo $base_url; ?>/img/Mowinton%20Group.jpeg" 
+                                     alt="Mowinton Consulting Group Team" 
+                                     width="500" 
+                                     height="280">
+                            </div>
+                            <div class="career-slide">
+                                <img src="<?php echo $base_url; ?>/img/groupimage-300x284.webp" 
+                                     alt="Mowinton Team Gathering" 
+                                     width="500" 
+                                     height="280" 
+                                     loading="lazy">
+                            </div>
+                            <div class="career-slide">
+                                <img src="<?php echo $base_url; ?>/img/about-team.jpg" 
+                                     alt="Mowinton Team Collaboration" 
+                                     width="500" 
+                                     height="280" 
+                                     loading="lazy">
+                            </div>
+                            <div class="career-slide">
+                                <img src="<?php echo $base_url; ?>/img/careers-work-culture.jpg" 
+                                     alt="Mowinton Consulting Work Culture" 
+                                     width="500" 
+                                     height="280" 
+                                     loading="lazy">
+                            </div>
+                            <div class="career-slide">
+                                <img src="<?php echo $base_url; ?>/img/services-workforce-trained.jpg" 
+                                     alt="Mowinton Specialized Talent" 
+                                     width="500" 
+                                     height="280" 
+                                     loading="lazy">
+                            </div>
+                        </div>
+                        <!-- Carousel Indicators / Dots -->
+                        <div class="career-carousel-dots" role="tablist" aria-label="Carousel slide controls">
+                            <button type="button" class="career-dot active" data-slide="0" aria-label="Slide 1: Mowinton Group Photo"></button>
+                            <button type="button" class="career-dot" data-slide="1" aria-label="Slide 2: Team Gathering"></button>
+                            <button type="button" class="career-dot" data-slide="2" aria-label="Slide 3: Team Collaboration"></button>
+                            <button type="button" class="career-dot" data-slide="3" aria-label="Slide 4: Work Culture"></button>
+                            <button type="button" class="career-dot" data-slide="4" aria-label="Slide 5: Specialized Talent"></button>
+                        </div>
                     </div>
                 </div>
             </div>
