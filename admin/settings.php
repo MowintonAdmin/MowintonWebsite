@@ -122,7 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         $smtpUser          = trim((string)($_POST['smtp_user'] ?? ''));
         $smtpPass          = trim((string)($_POST['smtp_pass'] ?? ''));
         $smtpSecure        = trim((string)($_POST['smtp_secure'] ?? 'ssl'));
-        $sessionTimeout    = max(5, (int)($_POST['session_timeout_minutes'] ?? 30));
+        $sessionTimeout    = max(1, min(1440, (int)($_POST['session_timeout_minutes'] ?? 30)));
 
         set_system_setting('notification_email', $notificationEmail);
         set_system_setting('smtp_enabled', $smtpEnabled);
@@ -269,7 +269,7 @@ require_once __DIR__ . '/admin-header.php';
 
         <div class="admin-form-group">
             <label for="session_timeout_minutes">Session Timeout (Minutes of Inactivity)</label>
-            <input type="number" id="session_timeout_minutes" name="session_timeout_minutes" class="admin-form-input" min="5" max="1440"
+            <input type="number" id="session_timeout_minutes" name="session_timeout_minutes" class="admin-form-input" min="1" max="1440"
                    value="<?php echo htmlspecialchars($settings['session_timeout_minutes'] ?? '30'); ?>">
             <small style="color: var(--admin-text-muted); font-size: 12px;">Administrators will be automatically logged out after this period of inactivity.</small>
         </div>

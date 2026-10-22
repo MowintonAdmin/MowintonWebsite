@@ -32,10 +32,23 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 /**
- * Checks for session inactivity timeout.
+ * Retrieves the configured admin session timeout in seconds from system settings.
  */
-function check_session_timeout(int $timeoutSeconds = 1800): void {
+function get_session_timeout_seconds(): int {
+    $minutes = (int)(get_system_setting('session_timeout_minutes', '30') ?? 30);
+    $minutes = max(1, min(1440, $minutes));
+    return $minutes * 60;
+}
+
+/**
+ * Checks for session inactivity timeout based on dynamic system settings.
+ */
+function check_session_timeout(?int $timeoutSeconds = null): void {
     if (isset($_SESSION['admin_user_id'])) {
+        if ($timeoutSeconds === null) {
+            $timeoutSeconds = get_session_timeout_seconds();
+        }
+
         if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > $timeoutSeconds)) {
             // Logged out due to inactivity
             $adminId = (int)$_SESSION['admin_user_id'];
@@ -47,8 +60,8 @@ function check_session_timeout(int $timeoutSeconds = 1800): void {
     }
 }
 
-// Enforce timeout check on every request
-check_session_timeout(1800); // 30 minutes
+// Enforce timeout check on every request using dynamic system setting
+check_session_timeout();
 
 /**
  * Checks if current request is authenticated as admin.

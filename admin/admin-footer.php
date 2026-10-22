@@ -132,6 +132,39 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     });
+
+    // --- Real-time Session Inactivity Auto-Logout ---
+    (function () {
+        const timeoutSeconds = <?php echo function_exists('get_session_timeout_seconds') ? get_session_timeout_seconds() : 1800; ?>;
+        let secondsInactive = 0;
+        let lastPingTime = Date.now();
+
+        function resetInactivity() {
+            secondsInactive = 0;
+            // Send keepalive ping at most once every 60 seconds while user is actively interacting
+            const now = Date.now();
+            if (now - lastPingTime > 60000) {
+                lastPingTime = now;
+                fetch('/admin/session-ping.php', { method: 'GET', credentials: 'same-origin' })
+                    .catch(function () {});
+            }
+        }
+
+        // Listen for user interactions across the dashboard
+        const activityEvents = ['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart', 'click'];
+        activityEvents.forEach(function (evt) {
+            window.addEventListener(evt, resetInactivity, { passive: true });
+        });
+
+        // Inactivity ticker every second
+        setInterval(function () {
+            secondsInactive += 1;
+            if (secondsInactive >= timeoutSeconds) {
+                // Instantly redirect to login with expired notice
+                window.location.href = '/admin/login.php?expired=1';
+            }
+        }, 1000);
+    })();
 });
 </script>
 </body>
