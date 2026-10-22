@@ -44,8 +44,8 @@ require_once __DIR__ . '/../includes/header.php';
                                      height="280">
                             </div>
                             <div class="career-slide">
-                                <img src="<?php echo $base_url; ?>/img/groupimage-300x284.webp" 
-                                     alt="Mowinton Team Gathering" 
+                                <img src="<?php echo $base_url; ?>/img/interview-professional.jpg" 
+                                     alt="Mowinton Professional Team Discussion" 
                                      width="500" 
                                      height="280" 
                                      loading="lazy">
@@ -75,7 +75,7 @@ require_once __DIR__ . '/../includes/header.php';
                         <!-- Carousel Indicators / Dots -->
                         <div class="career-carousel-dots" role="tablist" aria-label="Carousel slide controls">
                             <button type="button" class="career-dot active" data-slide="0" aria-label="Slide 1: Mowinton Group Photo"></button>
-                            <button type="button" class="career-dot" data-slide="1" aria-label="Slide 2: Team Gathering"></button>
+                            <button type="button" class="career-dot" data-slide="1" aria-label="Slide 2: Professional Team Discussion"></button>
                             <button type="button" class="career-dot" data-slide="2" aria-label="Slide 3: Team Collaboration"></button>
                             <button type="button" class="career-dot" data-slide="3" aria-label="Slide 4: Work Culture"></button>
                             <button type="button" class="career-dot" data-slide="4" aria-label="Slide 5: Specialized Talent"></button>
