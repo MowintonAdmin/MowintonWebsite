@@ -17,13 +17,6 @@ require_once __DIR__ . '/../includes/header.php';
             </p>
         </div>
 
-        <div class="news-hero">
-            <h2>News &amp; Insights</h2>
-            <p>
-                Stay informed with the latest technology trends, project management insights, digital transformation strategies, and company updates from Mowinton Consulting.
-            </p>
-        </div>
-
         <h2 class="news-title">Latest Articles &amp; Insights</h2>
         <p class="news-subtitle">
             Discover practical knowledge and business perspectives designed to help organizations navigate today’s evolving digital landscape.
