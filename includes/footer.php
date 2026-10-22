@@ -68,5 +68,86 @@ $base_url = $root_path;
 
 <!-- JavaScript -->
 <script src="<?php echo $base_url; ?>/js/main.js"></script>
+
+<!-- BitBot AI Chatbot Widget -->
+<div id="bitbot-widget" class="bitbot-bottom-right" data-preferred="right" data-base-offset-y="20" data-shape="rounded" style="--bitbot-primary: #0073aa; --bitbot-offset-x: 20px; --bitbot-offset-y: 20px; --bitbot-radius: 32px;"></div>
+<template id="bitbot-widget-template">
+    <div class="bitbot-widget">
+        <!-- Chat Toggle Button -->
+        <button id="bitbot-toggle" class="bitbot-toggle" aria-label="Open chat">
+            <svg class="bitbot-icon-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+            <svg class="bitbot-icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
+
+        <!-- Chat Window -->
+        <div id="bitbot-chat" class="bitbot-chat" style="display:none;">
+            <!-- Header -->
+            <div class="bitbot-header">
+                <span id="bitbot-header-avatar" class="bitbot-header-avatar"></span>
+                <span class="bitbot-title">Chat with us</span>
+                <button id="bitbot-minimize" class="bitbot-minimize" aria-label="Minimize chat">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Messages Container -->
+            <div id="bitbot-messages" class="bitbot-messages">
+                <!-- Welcome message -->
+                <div class="bitbot-message bitbot-bot">
+                    <div class="bitbot-message-content">
+                        Hi! How can I help you today?
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <form id="bitbot-form" class="bitbot-input-area">
+                <input
+                    type="text"
+                    id="bitbot-input"
+                    class="bitbot-input"
+                    placeholder="Type your message..."
+                    autocomplete="off"
+                >
+                <button type="submit" class="bitbot-send" aria-label="Send message">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                </button>
+            </form>
+
+            <div class="bitbot-branding">
+                Powered by
+                <a href="https://youami.ai/?utm_source=widget&utm_medium=branding&utm_campaign=free_tier"
+                   target="_blank"
+                   rel="noopener">
+                   BitBot
+                </a>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+window.bitbotConfig = {
+    restUrl: window.location.origin + '/api/bitbot',
+    cssUrl: '<?php echo $base_url; ?>/css/bitbot-widget.css',
+    position: 'bottom-right',
+    primaryColor: '#0073aa',
+    welcomeMessage: 'Hi! How can I help you today?',
+    languageCode: 'en',
+    widgetTitle: 'Chat with us',
+    accessPaused: false
+};
+</script>
+<script src="<?php echo $base_url; ?>/js/bitbot-widget.js" defer></script>
 </body>
 </html>

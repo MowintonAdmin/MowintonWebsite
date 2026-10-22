@@ -69,6 +69,12 @@ if (
     exit;
 }
 
+// 3. API Routing: Handle BitBot Chatbot API endpoints
+if (str_starts_with($normalizedPath, '/api/bitbot')) {
+    require __DIR__ . '/api/bitbot/index.php';
+    exit;
+}
+
 $fullPath = __DIR__ . $path;
 
 // 2. Directory Routing: If path is a directory, serve index.php inside it

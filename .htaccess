@@ -35,6 +35,9 @@ Options -Indexes
     # Deny direct access to private and internal code directories
     RewriteRule ^(includes|database|scripts|storage|uploads/resumes)(/.*)?$ - [F,L,NC]
 
+    # Route BitBot API requests to proxy controller
+    RewriteRule ^api/bitbot(/.*)?$ api/bitbot/index.php [QSA,L]
+
     # Clean URL Directory Routing
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
