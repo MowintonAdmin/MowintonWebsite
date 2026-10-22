@@ -67,7 +67,7 @@ $base_url = $root_path;
 </footer>
 
 <!-- JavaScript -->
-<script src="<?php echo $base_url; ?>/js/main.js"></script>
+<script src="<?php echo $base_url; ?>/js/main.js?v=<?php echo file_exists(__DIR__ . '/../js/main.js') ? filemtime(__DIR__ . '/../js/main.js') : '2.1.0'; ?>"></script>
 
 <!-- BitBot AI Chatbot Widget -->
 <div id="bitbot-widget" class="bitbot-bottom-right" data-preferred="right" data-base-offset-y="20" data-shape="rounded" style="--bitbot-primary: #0073aa; --bitbot-offset-x: 20px; --bitbot-offset-y: 20px; --bitbot-radius: 32px;"></div>
@@ -148,6 +148,6 @@ window.bitbotConfig = {
     accessPaused: false
 };
 </script>
-<script src="<?php echo $base_url; ?>/js/bitbot-widget.js" defer></script>
+<script src="<?php echo $base_url; ?>/js/bitbot-widget.js?v=<?php echo file_exists(__DIR__ . '/../js/bitbot-widget.js') ? filemtime(__DIR__ . '/../js/bitbot-widget.js') : '2.1.0'; ?>" defer></script>
 </body>
 </html>

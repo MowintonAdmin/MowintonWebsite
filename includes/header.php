@@ -27,7 +27,7 @@ $base_url = $root_path;
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- Main Stylesheet -->
-    <link rel="stylesheet" href="<?php echo $base_url; ?>/css/style.css">
+    <link rel="stylesheet" href="<?php echo $base_url; ?>/css/style.css?v=<?php echo file_exists(__DIR__ . '/../css/style.css') ? filemtime(__DIR__ . '/../css/style.css') : '2.1.0'; ?>">
     <link rel="icon" type="image/webp" href="<?php echo $base_url; ?>/img/Mowinton-Consulting_画板-1-300x300.webp" sizes="32x32">
 </head>
 <body>
