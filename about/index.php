@@ -13,7 +13,7 @@ require_once __DIR__ . '/../includes/header.php';
 
 <main id="main-content">
     <!-- Intro Header & Hero Banner -->
-    <section class="about-hero-section" style="max-width:1200px;margin:40px auto;padding:0 30px;">
+    <section class="about-hero-section">
         <div class="page-intro-header">
             <h1 class="page-intro-title">About</h1>
             <p class="page-intro-desc">

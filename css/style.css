@@ -1072,6 +1072,12 @@ textarea.form-control {
 /* ==========================================================================
    About Page Components
    ========================================================================== */
+.about-hero-section {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 30px;
+}
+
 .page-intro-header {
   text-align: center;
   margin-bottom: 35px;
@@ -1129,6 +1135,8 @@ textarea.form-control {
   color: var(--color-white);
   margin: 0 0 25px;
   letter-spacing: -1.5px;
+  overflow-wrap: break-word;
+  word-break: normal;
 }
 
 .about-banner-text {
@@ -1217,6 +1225,7 @@ textarea.form-control {
   position: relative;
   overflow: hidden;
   border: 1px solid var(--color-border);
+  min-width: 0;
 }
 
 .mowinton-card:before {
@@ -1257,6 +1266,8 @@ textarea.form-control {
   color: var(--color-dark);
   margin: 0 0 14px;
   font-weight: 700;
+  overflow-wrap: break-word;
+  word-break: normal;
 }
 
 .mowinton-card p {
@@ -1487,6 +1498,322 @@ textarea.form-control {
   width: 100%;
   height: 600px;
   display: block;
+}
+
+/* ==========================================================================
+   About Page Responsive Styles
+   ========================================================================== */
+
+/* Tablet (1024px and below) */
+@media (max-width: 1024px) {
+  .about-banner-box {
+    padding: 50px 36px;
+  }
+
+  .about-banner-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 36px;
+  }
+
+  .about-banner-title {
+    font-size: 46px;
+    line-height: 1.12;
+  }
+
+  .about-banner-images img:first-child {
+    height: 220px;
+  }
+
+  .about-banner-images img:last-child {
+    height: 270px;
+    margin-top: 36px;
+  }
+
+  /* Issue 1: Tablet 2 columns for Service Cards */
+  .mowinton-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+
+  .office-grid {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+
+  .consultation-grid {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+
+  .consultation-section {
+    padding: 36px;
+  }
+}
+
+/* Mobile Screens (768px and below) */
+@media (max-width: 768px) {
+  .about-hero-section {
+    padding: 0 20px;
+    margin: 24px auto 40px auto;
+  }
+
+  .page-intro-header {
+    margin-bottom: 24px;
+  }
+
+  .page-intro-title {
+    font-size: clamp(34px, 8vw, 44px);
+    margin-bottom: 12px;
+  }
+
+  .page-intro-desc {
+    font-size: 16px;
+    line-height: 1.7;
+  }
+
+  /* Issue 2: Hero Section Mobile Adaptation */
+  .about-banner-box {
+    padding: 36px 22px;
+    border-radius: 24px;
+    margin-bottom: 40px;
+  }
+
+  .about-banner-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .about-banner-tag {
+    font-size: 12px;
+    padding: 6px 14px;
+    margin-bottom: 16px;
+  }
+
+  .about-banner-title {
+    font-size: clamp(28px, 6.5vw, 38px);
+    line-height: 1.15;
+    letter-spacing: -0.5px;
+    margin-bottom: 16px;
+  }
+
+  .about-banner-text {
+    font-size: 16px;
+    line-height: 1.7;
+    margin-bottom: 24px;
+    max-width: 100%;
+  }
+
+  .about-banner-grid .btn-secondary {
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    padding: 14px 28px !important;
+    font-size: 16px;
+    box-sizing: border-box;
+  }
+
+  .about-banner-images {
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  .about-banner-images img:first-child {
+    height: 200px;
+    border-radius: 18px;
+  }
+
+  .about-banner-images img:last-child {
+    height: 230px;
+    margin-top: 22px;
+    border-radius: 18px;
+  }
+
+  /* Issue 1: Stack all three cards vertically (768px and below) */
+  .mowinton-section {
+    padding: 0 20px;
+    margin: 40px auto;
+  }
+
+  .mowinton-badge {
+    font-size: 15px;
+    padding: 10px 22px;
+    margin-bottom: 18px;
+  }
+
+  .mowinton-title {
+    font-size: clamp(26px, 6vw, 34px);
+    line-height: 1.25;
+    margin-bottom: 14px;
+  }
+
+  .mowinton-subtitle {
+    font-size: 16px;
+    line-height: 1.7;
+    margin-bottom: 30px;
+  }
+
+  .mowinton-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .mowinton-card {
+    padding: 28px 22px;
+    border-radius: 20px;
+  }
+
+  .mowinton-card h3 {
+    font-size: 22px;
+    margin-bottom: 10px;
+  }
+
+  .mowinton-card p {
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  .mowinton-icon {
+    width: 58px;
+    height: 58px;
+    font-size: 26px;
+    border-radius: 15px;
+    margin-bottom: 18px;
+  }
+
+  /* Office Location Section Mobile */
+  .office-location-section {
+    padding: 0 20px;
+    margin: 40px auto;
+  }
+
+  .info-card {
+    padding: 28px 20px;
+    border-radius: 20px;
+  }
+
+  .info-card h2 {
+    font-size: 28px;
+    margin-bottom: 12px;
+  }
+
+  .map-wrapper iframe {
+    height: 340px;
+  }
+
+  /* FAQ Section Mobile */
+  .mowinton-faq-section {
+    padding: 0 20px;
+    margin: 40px auto;
+  }
+
+  .mowinton-faq-badge {
+    font-size: 15px;
+    padding: 10px 24px;
+    margin-bottom: 18px;
+  }
+
+  .mowinton-faq-title {
+    font-size: clamp(28px, 6vw, 36px);
+    line-height: 1.2;
+    margin-bottom: 14px;
+  }
+
+  .mowinton-faq-subtitle {
+    font-size: 16px;
+    margin-bottom: 28px;
+  }
+
+  .mowinton-faq-list summary {
+    font-size: 17px;
+    padding: 20px;
+  }
+
+  .mowinton-faq-content {
+    font-size: 15px;
+    padding: 0 20px 20px 20px;
+  }
+
+  /* Consultation Section Mobile */
+  .consultation-section {
+    padding: 30px 20px;
+    margin: 40px auto;
+    border-radius: 22px;
+  }
+
+  .consultation-title {
+    font-size: 26px;
+    line-height: 1.25;
+    margin-bottom: 16px;
+  }
+
+  .consultation-desc {
+    font-size: 15px;
+  }
+
+  .consultation-card iframe {
+    height: 520px;
+  }
+}
+
+/* Extra-Small Mobile (480px and below) */
+@media (max-width: 480px) {
+  .about-hero-section,
+  .mowinton-section,
+  .office-location-section,
+  .mowinton-faq-section {
+    padding: 0 16px;
+  }
+
+  .about-banner-box {
+    padding: 30px 16px;
+    border-radius: 20px;
+  }
+
+  .about-banner-title {
+    font-size: 27px;
+    line-height: 1.2;
+  }
+
+  .about-banner-text {
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  .about-banner-images {
+    gap: 10px;
+  }
+
+  .about-banner-images img:first-child {
+    height: 160px;
+    border-radius: 14px;
+  }
+
+  .about-banner-images img:last-child {
+    height: 185px;
+    margin-top: 16px;
+    border-radius: 14px;
+  }
+
+  .mowinton-card {
+    padding: 24px 18px;
+    border-radius: 18px;
+  }
+
+  .mowinton-card h3 {
+    font-size: 20px;
+  }
+
+  .consultation-section {
+    padding: 24px 16px;
+  }
+
+  .info-card {
+    padding: 22px 16px;
+  }
+
+  .map-wrapper iframe {
+    height: 280px;
+  }
 }
 
 /* ==========================================================================
