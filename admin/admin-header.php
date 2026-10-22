@@ -114,11 +114,18 @@ try {
                 <div class="admin-user-name"><?php echo htmlspecialchars($currentUser['full_name']); ?></div>
                 <div class="admin-user-role"><?php echo htmlspecialchars(str_replace('_', ' ', $currentUser['role'])); ?></div>
             </div>
-            <a href="/admin/logout.php" class="admin-logout-btn" title="Sign Out">
-                <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-                </svg>
-            </a>
+            <div style="display: flex; align-items: center; gap: 4px;">
+                <button type="button" class="admin-logout-btn" onclick="openModal('changeOwnPasswordModal')" title="Change Password" style="background: none; border: none; cursor: pointer; color: inherit; display: flex; align-items: center; justify-content: center;">
+                    <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
+                    </svg>
+                </button>
+                <a href="/admin/logout.php" class="admin-logout-btn" title="Sign Out">
+                    <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                    </svg>
+                </a>
+            </div>
         </div>
     </aside>
 
@@ -140,6 +147,12 @@ try {
                 <span style="font-size: 13px; color: var(--admin-text-muted);">
                     Logged in as <strong><?php echo htmlspecialchars($currentUser['username']); ?></strong>
                 </span>
+                <button type="button" class="admin-btn admin-btn-sm admin-btn-secondary" onclick="openModal('changeOwnPasswordModal')" style="display: inline-flex; align-items: center; gap: 6px;">
+                    <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
+                    </svg>
+                    <span>Change Password</span>
+                </button>
                 <a href="/admin/logout.php" class="admin-btn admin-btn-sm admin-btn-secondary">
                     Logout
                 </a>

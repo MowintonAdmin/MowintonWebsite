@@ -77,7 +77,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     exit;
 }
 
-// 3. Handle Update System Settings
+// 3. Handle Super Admin Reset Password for Staff / User
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'reset_staff_password') {
+    if (!admin_verify_csrf($_POST['csrf_token'] ?? '')) {
+        $_SESSION['flash_error'] = 'Security validation failed. Please try again.';
+    } else {
+        $targetId = (int)($_POST['target_user_id'] ?? 0);
+        $newPassword = (string)($_POST['new_password'] ?? '');
+        $confirmPassword = (string)($_POST['confirm_password'] ?? '');
+
+        // Fetch target user
+        $targetStmt = $db->prepare('SELECT id, username FROM admin_users WHERE id = ? LIMIT 1');
+        $targetStmt->execute([$targetId]);
+        $targetUser = $targetStmt->fetch();
+
+        if (!$targetUser) {
+            $_SESSION['flash_error'] = 'Target user account not found.';
+        } elseif (strlen($newPassword) < 8) {
+            $_SESSION['flash_error'] = 'Password must be at least 8 characters long.';
+        } elseif ($newPassword !== $confirmPassword) {
+            $_SESSION['flash_error'] = 'New password and confirmation do not match.';
+        } else {
+            $newHash = password_hash($newPassword, PASSWORD_DEFAULT);
+            $stmt = $db->prepare('UPDATE admin_users SET password_hash = ?, updated_at = NOW() WHERE id = ?');
+            $stmt->execute([$newHash, $targetId]);
+
+            record_audit_log('reset_password', 'admin_users', $targetId, "Super Admin '{$currentUser['username']}' reset password for '{$targetUser['username']}'");
+            $_SESSION['flash_success'] = "Password for '{$targetUser['username']}' has been updated successfully.";
+        }
+    }
+    header('Location: /admin/settings.php');
+    exit;
+}
+
+// 4. Handle Update System Settings
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'save_settings') {
     if (!admin_verify_csrf($_POST['csrf_token'] ?? '')) {
         $_SESSION['flash_error'] = 'Security validation failed.';
@@ -182,20 +215,30 @@ require_once __DIR__ . '/admin-header.php';
                         <?php echo $u['last_login_at'] ? htmlspecialchars(date('M j, Y h:i A', strtotime($u['last_login_at']))) : 'Never'; ?>
                     </td>
                     <td>
-                        <?php if ($u['id'] !== $currentUser['id']): ?>
-                            <form method="POST" action="" style="display: inline;">
-                                <?php echo admin_csrf_field(); ?>
-                                <input type="hidden" name="action" value="toggle_user_status">
-                                <input type="hidden" name="user_id" value="<?php echo (int)$u['id']; ?>">
-                                <input type="hidden" name="new_status" value="<?php echo ($u['status'] === 'active') ? 'suspended' : 'active'; ?>">
-                                <button type="submit" class="admin-btn admin-btn-sm <?php echo ($u['status'] === 'active') ? 'admin-btn-danger' : 'admin-btn-success'; ?>"
-                                        onclick="return confirm('Change status for <?php echo htmlspecialchars(addslashes($u['username'])); ?>?')">
-                                    <?php echo ($u['status'] === 'active') ? 'Suspend' : 'Activate'; ?>
+                        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                            <?php if ($u['id'] !== $currentUser['id']): ?>
+                                <button type="button" class="admin-btn admin-btn-sm admin-btn-secondary" 
+                                        onclick="openResetPasswordModal(<?php echo (int)$u['id']; ?>, '<?php echo htmlspecialchars(addslashes($u['username'])); ?>', '<?php echo htmlspecialchars(addslashes($u['full_name'])); ?>')"
+                                        title="Super Admin: Set new password for this user">
+                                    Reset Password
                                 </button>
-                            </form>
-                        <?php else: ?>
-                            <span style="font-size: 12px; color: var(--admin-text-muted); font-style: italic;">(Your Account)</span>
-                        <?php endif; ?>
+                                <form method="POST" action="" style="display: inline;">
+                                    <?php echo admin_csrf_field(); ?>
+                                    <input type="hidden" name="action" value="toggle_user_status">
+                                    <input type="hidden" name="user_id" value="<?php echo (int)$u['id']; ?>">
+                                    <input type="hidden" name="new_status" value="<?php echo ($u['status'] === 'active') ? 'suspended' : 'active'; ?>">
+                                    <button type="submit" class="admin-btn admin-btn-sm <?php echo ($u['status'] === 'active') ? 'admin-btn-danger' : 'admin-btn-success'; ?>"
+                                            onclick="return confirm('Change status for <?php echo htmlspecialchars(addslashes($u['username'])); ?>?')">
+                                        <?php echo ($u['status'] === 'active') ? 'Suspend' : 'Activate'; ?>
+                                    </button>
+                                </form>
+                            <?php else: ?>
+                                <button type="button" class="admin-btn admin-btn-sm admin-btn-secondary" onclick="openModal('changeOwnPasswordModal')">
+                                    Change Password
+                                </button>
+                                <span style="font-size: 12px; color: var(--admin-text-muted); font-style: italic;">(You)</span>
+                            <?php endif; ?>
+                        </div>
                     </td>
                 </tr>
                 <?php endforeach; ?>
@@ -373,5 +416,77 @@ require_once __DIR__ . '/admin-header.php';
         </form>
     </div>
 </div>
+
+<!-- Modal: Super Admin Reset Staff Password -->
+<div class="admin-modal-backdrop" id="resetUserPasswordModal">
+    <div class="admin-modal">
+        <div class="admin-modal-header">
+            <div>
+                <h3 style="margin-bottom: 2px;">Reset User Password</h3>
+                <span style="font-size: 13px; color: var(--admin-text-muted);">
+                    Account: <strong id="reset_user_name_display" style="color: var(--admin-navy);"></strong>
+                </span>
+            </div>
+            <button type="button" class="admin-modal-close" onclick="closeModal('resetUserPasswordModal')">✕</button>
+        </div>
+
+        <p style="font-size: 13px; color: #475569; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 14px; margin-bottom: 18px;">
+            <strong>Super Admin Control:</strong> You can assign a new password for this user directly. Their existing password is not required.
+        </p>
+
+        <form method="POST" action="">
+            <?php echo admin_csrf_field(); ?>
+            <input type="hidden" name="action" value="reset_staff_password">
+            <input type="hidden" id="reset_user_id" name="target_user_id" value="">
+
+            <div class="admin-form-group">
+                <label for="reset_new_password">New Password (Minimum 8 Characters)</label>
+                <div class="password-input-wrap">
+                    <input type="password" id="reset_new_password" name="new_password" class="admin-form-input" minlength="8" required placeholder="Enter new password">
+                    <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('reset_new_password', this)" aria-label="Show password" title="Show password">
+                        <svg class="eye-open" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                        </svg>
+                        <svg class="eye-closed" style="display: none;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="admin-form-group">
+                <label for="reset_confirm_password">Confirm New Password</label>
+                <div class="password-input-wrap">
+                    <input type="password" id="reset_confirm_password" name="confirm_password" class="admin-form-input" minlength="8" required placeholder="Confirm new password">
+                    <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('reset_confirm_password', this)" aria-label="Show password" title="Show password">
+                        <svg class="eye-open" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                        </svg>
+                        <svg class="eye-closed" style="display: none;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px;">
+                <button type="button" class="admin-btn admin-btn-secondary" onclick="closeModal('resetUserPasswordModal')">Cancel</button>
+                <button type="submit" class="admin-btn admin-btn-primary" style="width: auto;">Set New Password</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function openResetPasswordModal(userId, username, fullName) {
+    document.getElementById('reset_user_id').value = userId;
+    document.getElementById('reset_user_name_display').textContent = '@' + username + (fullName ? ' (' + fullName + ')' : '');
+    document.getElementById('reset_new_password').value = '';
+    document.getElementById('reset_confirm_password').value = '';
+    openModal('resetUserPasswordModal');
+}
+</script>
 
 <?php require_once __DIR__ . '/admin-footer.php'; ?>
